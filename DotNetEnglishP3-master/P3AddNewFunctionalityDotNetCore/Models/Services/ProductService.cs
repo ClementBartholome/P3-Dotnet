@@ -27,21 +27,20 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
         }
         public List<ProductViewModel> GetAllProductsViewModel()
         {
-             
             IEnumerable<Product> productEntities = GetAllProducts();
             return MapToViewModel(productEntities);
         }
 
         private static List<ProductViewModel> MapToViewModel(IEnumerable<Product> productEntities)
         {
-            List <ProductViewModel> products = new List<ProductViewModel>();
+            List<ProductViewModel> products = new List<ProductViewModel>();
             foreach (Product product in productEntities)
             {
                 products.Add(new ProductViewModel
                 {
                     Id = product.Id,
-                    Stock = product.Quantity.ToString(),
-                    Price = product.Price.ToString(CultureInfo.InvariantCulture),
+                    Stock = product.Quantity,
+                    Price = product.Price,
                     Name = product.Name,
                     Description = product.Description,
                     Details = product.Details
@@ -83,7 +82,7 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
         }
         public void UpdateProductQuantities()
         {
-            Cart cart = (Cart) _cart;
+            Cart cart = (Cart)_cart;
             foreach (CartLine line in cart.Lines)
             {
                 _productRepository.UpdateProductStocks(line.Product.Id, line.Quantity);
@@ -98,44 +97,34 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
             {
                 modelErrors.Add(_localizer["MissingName"]);
             }
-
-            if (product.Price == null || string.IsNullOrWhiteSpace(product.Price))
+            
+            if (product.Price <= 0) 
             {
-                modelErrors.Add(_localizer["MissingPrice"]);
+                modelErrors.Add(_localizer["PriceNotGreaterThanZero"]);
             }
 
-            if (!Double.TryParse(product.Price, out double pc))
+            if (product.Stock <= 0) 
             {
-                modelErrors.Add(_localizer["PriceNotANumber"]);
-            }
-            else
-            {
-                if (pc <= 0)
-                    modelErrors.Add(_localizer["PriceNotGreaterThanZero"]);
-            }
-
-            if (product.Stock == null || string.IsNullOrWhiteSpace(product.Stock))
-            {
-                modelErrors.Add(_localizer["MissingQuantity"]);
-            }
-
-            if (!int.TryParse(product.Stock, out int qt))
-            {
-                modelErrors.Add(_localizer["StockNotAnInteger"]);
-            }
-            else
-            {
-                if (qt <= 0)
-                    modelErrors.Add(_localizer["StockNotGreaterThanZero"]);
+                modelErrors.Add(_localizer["StockNotGreaterThanZero"]);
             }
 
             return modelErrors;
         }
 
-        public void SaveProduct(ProductViewModel product)
+        public async Task<string> SaveProduct(ProductViewModel product)
         {
             var productToAdd = MapToProductEntity(product);
-            _productRepository.SaveProduct(productToAdd);
+            var existingProduct = await _productRepository.GetProductByName(product.Name);
+
+            if (existingProduct != null && existingProduct.Name == product.Name)
+            {
+                return _localizer["ProductAlreadyExists"];
+            }
+            else
+            {
+                _productRepository.SaveProduct(productToAdd);
+                return null;
+            }
         }
 
         private static Product MapToProductEntity(ProductViewModel product)
@@ -143,8 +132,8 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
             Product productEntity = new Product
             {
                 Name = product.Name,
-                Price = double.Parse(product.Price),
-                Quantity = Int32.Parse(product.Stock),
+                Price = product.Price,
+                Quantity = product.Stock,
                 Description = product.Description,
                 Details = product.Details
             };
@@ -153,11 +142,17 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
 
         public void DeleteProduct(int id)
         {
-            // TODO what happens if a product has been added to a cart and has been later removed from the inventory ?
-            // delete the product form the cart by using the specific method
-            // => the choice is up to the student
-            _cart.RemoveLine(GetProductById(id));
-
+            var product = GetProductById(id);
+            if (product == null)
+            {
+                throw new ArgumentException($"Aucun produit avec l'ID : {id} trouvé.");
+            }
+            
+            if (_cart != null)
+            {
+                _cart.RemoveLine(product);
+            }
+            
             _productRepository.DeleteProduct(id);
         }
     }
