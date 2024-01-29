@@ -35,6 +35,12 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Repositories
             return productEntities.ToList();
         }
 
+        public async Task<Product> GetProductByName(string name)
+        {
+            var product = await _context.Product.SingleOrDefaultAsync(m => m.Name == name);
+            return product;
+        }
+
         /// <summary>
         /// Update the stock of a product by its id
         /// </summary>

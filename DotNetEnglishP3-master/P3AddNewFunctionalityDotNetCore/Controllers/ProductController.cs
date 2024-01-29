@@ -4,6 +4,7 @@ using P3AddNewFunctionalityDotNetCore.Models.Services;
 using P3AddNewFunctionalityDotNetCore.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace P3AddNewFunctionalityDotNetCore.Controllers
 {
@@ -38,7 +39,7 @@ namespace P3AddNewFunctionalityDotNetCore.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult Create(ProductViewModel product)
+        public async Task<IActionResult> Create(ProductViewModel product)
         {
             List<string> modelErrors = _productService.CheckProductModelErrors(product);           
 
@@ -47,15 +48,17 @@ namespace P3AddNewFunctionalityDotNetCore.Controllers
                 ModelState.AddModelError("", error);
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(product);
+            var saveProductError = await _productService.SaveProduct(product);
+            if (saveProductError != null)
             {
-                _productService.SaveProduct(product);
-                return RedirectToAction("Admin");
+                ModelState.AddModelError("", saveProductError);
             }
             else
             {
-                return View(product);
+                return RedirectToAction("Admin");
             }
+            return View(product);
         }
 
         [Authorize]
