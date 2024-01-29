@@ -141,7 +141,4 @@
   <data name="ProductAlreadyExists" xml:space="preserve">
     <value>A product with this name is already registered</value>
   </data>
-  <data name="MissingQuantity" xml:space="preserve">
-    <value>Please enter a quantity</value>
-  </data>
 </root>
