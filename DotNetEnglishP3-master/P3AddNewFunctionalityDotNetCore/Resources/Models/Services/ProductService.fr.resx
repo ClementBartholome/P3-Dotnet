@@ -138,4 +138,10 @@
   <data name="StockNotGreaterThanZero" xml:space="preserve">
     <value>La stock doit être supérieure à zéro</value>
   </data>
+  <data name="ProductAlreadyExists" xml:space="preserve">
+    <value>Un produit avec ce nom est déjà enregistré</value>
+  </data>
+  <data name="MissingQuantity" xml:space="preserve">
+    <value>Veuillez saisir une quantité</value>
+  </data>
 </root>
