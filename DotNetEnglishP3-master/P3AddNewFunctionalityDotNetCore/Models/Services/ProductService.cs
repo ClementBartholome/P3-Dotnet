@@ -39,8 +39,8 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
                 products.Add(new ProductViewModel
                 {
                     Id = product.Id,
-                    Stock = product.Quantity,
-                    Price = product.Price,
+                    Stock = product.Quantity.ToString(),
+                    Price = product.Price.ToString(CultureInfo.InvariantCulture),
                     Name = product.Name,
                     Description = product.Description,
                     Details = product.Details
@@ -98,14 +98,32 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
                 modelErrors.Add(_localizer["MissingName"]);
             }
             
-            if (product.Price <= 0) 
+            if (product.Price == null || string.IsNullOrWhiteSpace(product.Price))
             {
-                modelErrors.Add(_localizer["PriceNotGreaterThanZero"]);
+                modelErrors.Add(_localizer["MissingPrice"]);
+            }
+            else if (!Double.TryParse(product.Price, NumberStyles.Any, CultureInfo.InvariantCulture, out double pc))
+            {
+                modelErrors.Add(_localizer["PriceNotANumber"]);
+            }
+            else
+            {
+                if (pc <= 0)
+                    modelErrors.Add(_localizer["PriceNotGreaterThanZero"]);
             }
 
-            if (product.Stock <= 0) 
+            if (product.Stock == null || string.IsNullOrWhiteSpace(product.Stock))
             {
-                modelErrors.Add(_localizer["StockNotGreaterThanZero"]);
+                modelErrors.Add(_localizer["MissingQuantity"]);
+            }
+            else if (!int.TryParse(product.Stock, out int qt))
+            {
+                modelErrors.Add(_localizer["StockNotAnInteger"]);
+            }
+            else
+            {
+                if (qt <= 0)
+                    modelErrors.Add(_localizer["StockNotGreaterThanZero"]);
             }
 
             return modelErrors;
@@ -132,11 +150,19 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
             Product productEntity = new Product
             {
                 Name = product.Name,
-                Price = product.Price,
-                Quantity = product.Stock,
+                Quantity = Int32.Parse(product.Stock),
                 Description = product.Description,
                 Details = product.Details
             };
+            
+            if (double.TryParse(product.Price, NumberStyles.Any, CultureInfo.InvariantCulture, out double price))
+            {
+                productEntity.Price = price;
+            }
+            else
+            {
+                throw new ArgumentException($"Le prix {product.Price} n'est pas un nombre valide.");
+            }
             return productEntity;
         }
 

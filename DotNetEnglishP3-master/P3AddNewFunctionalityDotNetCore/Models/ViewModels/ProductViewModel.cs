@@ -13,8 +13,8 @@ namespace P3AddNewFunctionalityDotNetCore.Models.ViewModels
 
         [MaxLength(50)] public string Details { get; set; }
 
-        [Required]  public int Stock { get; set; }
+        [Required] public string Stock { get; set; }
 
-        [Required] public double Price { get; set; }
+        [Required] public string Price { get; set; }
     }
 }
