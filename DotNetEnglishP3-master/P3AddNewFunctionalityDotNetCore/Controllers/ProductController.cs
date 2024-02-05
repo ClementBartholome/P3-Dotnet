@@ -41,13 +41,6 @@ namespace P3AddNewFunctionalityDotNetCore.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductViewModel product)
         {
-            List<string> modelErrors = _productService.CheckProductModelErrors(product);           
-
-            foreach (string error in modelErrors)
-            {
-                ModelState.AddModelError("", error);
-            }
-
             if (!ModelState.IsValid) return View(product);
             var saveProductError = await _productService.SaveProduct(product);
             if (saveProductError != null)

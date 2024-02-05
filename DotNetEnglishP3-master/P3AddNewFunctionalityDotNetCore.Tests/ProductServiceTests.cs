@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Resources;
 using Xunit;
 using P3AddNewFunctionalityDotNetCore.Models.ViewModels;
-using P3AddNewFunctionalityDotNetCore.Models.Services;
 using Microsoft.Extensions.Localization;
 using Moq;
 using P3AddNewFunctionalityDotNetCore.Models.Entities;
 using P3AddNewFunctionalityDotNetCore.Models.Repositories;
+using ProductService = P3AddNewFunctionalityDotNetCore.Models.Services.ProductService;
+using ServiceResources = P3AddNewFunctionalityDotNetCore.Resources.Models.Services;
 
 namespace P3AddNewFunctionalityDotNetCore.Tests
 {
@@ -23,115 +26,122 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         }
 
         [Fact]
-        public void CheckProductModelErrors_ReturnsMissingNameError_WhenNameIsNull()
+        public void ProductViewModel_ReturnsMissingNameError_WhenNameIsNull()
         {
             // Arrange
             var product = new ProductViewModel { Name = null, Stock = "10", Price = "1.99" };
-            var expectedError = "MissingName";
-            var expectedErrors = new List<string> { expectedError };
-            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var result = _productService.CheckProductModelErrors(product);
+            var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("MissingName");
 
             // Assert
-            Assert.Equal(expectedErrors, result);
+            Assert.False(isValid);
+            Assert.Contains(validationResults, vr => vr.ErrorMessage == expectedErrorMessage);
         }
 
         [Fact]
-        public void CheckProductModelErrors_ReturnsStockNotGreaterThanZeroError_WhenStockIsZero()
+        public void ProductViewModel_ReturnsStockNotGreaterThanZeroError_WhenStockIsZero()
         {
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "0", Price = "1.99" };
-            var expectedError = "StockNotGreaterThanZero";
-            var expectedErrors = new List<string> { expectedError };
-            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var result = _productService.CheckProductModelErrors(product);
-
+            var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("StockNotGreaterThanZero");
+            
             // Assert
-            Assert.Equal(expectedErrors, result);
+            Assert.False(isValid);
+            Assert.Contains(validationResults, vr => vr.ErrorMessage == expectedErrorMessage);
         }
 
         [Fact]
-        public void CheckProductModelErrors_ReturnsPriceNotGreaterThanZeroError_WhenPriceIsZero()
+        public void ProductViewModel_ReturnsPriceNotGreaterThanZeroError_WhenPriceIsZero()
         {
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "10", Price = "0" };
-            var expectedError = "PriceNotGreaterThanZero";
-            var expectedErrors = new List<string> { expectedError };
-            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var result = _productService.CheckProductModelErrors(product);
-
+            var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("PriceNotGreaterThanZero");
+            
             // Assert
-            Assert.Equal(expectedErrors, result);
+            Assert.False(isValid);
+            Assert.Contains(validationResults, vr => vr.ErrorMessage == expectedErrorMessage);
         }
 
         [Fact]
-        public void CheckProductModelErrors_ReturnsMissingPriceError_WhenPriceIsNull()
+        public void ProductViewModel_ReturnsMissingPriceError_WhenPriceIsNull()
         {
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "10", Price = null };
-            var expectedError = "MissingPrice";
-            var expectedErrors = new List<string> { expectedError };
-            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var result = _productService.CheckProductModelErrors(product);
-
+            var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("MissingPrice");
+            
             // Assert
-            Assert.Equal(expectedErrors, result);
+            Assert.False(isValid);
+            Assert.Contains(validationResults, vr => vr.ErrorMessage == expectedErrorMessage);
         }
 
         [Fact]
-        public void CheckProductModelErrors_ReturnsPriceNotANumberError_WhenPriceIsNotANumber()
+        public void ProductViewModel_ReturnsPriceNotANumberError_WhenPriceIsNotANumber()
         {
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "10", Price = "NotANumber" };
-            var expectedError = "PriceNotANumber";
-            var expectedErrors = new List<string> { expectedError };
-            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var result = _productService.CheckProductModelErrors(product);
+            var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("PriceNotANumber");
 
             // Assert
-            Assert.Equal(expectedErrors, result);
+            Assert.False(isValid);
+            Assert.Contains(validationResults, vr => vr.ErrorMessage == expectedErrorMessage);
         }
 
         [Fact]
-        public void CheckProductModelErrors_ReturnsMissingStockError_WhenStockIsNull()
+        public void ProductViewModel_ReturnsMissingStockError_WhenStockIsNull()
         {
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = null, Price = "1.99" };
-            var expectedError = "MissingStock";
-            var expectedErrors = new List<string> { expectedError };
-            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var result = _productService.CheckProductModelErrors(product);
-
+            var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("MissingStock");
+            
             // Assert
-            Assert.Equal(expectedErrors, result);
+            Assert.False(isValid);
+            Assert.Contains(validationResults, vr => vr.ErrorMessage == expectedErrorMessage);
         }
 
         [Fact]
-        public void CheckProductModelErrors_ReturnsStockNotAnIntegerError_WhenStockIsNotAnInteger()
+        public void ProductViewModel_ReturnsStockNotAnIntegerError_WhenStockIsNotAnInteger()
         {
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "1.99", Price = "1.99" };
-            var expectedError = "StockNotAnInteger";
-            var expectedErrors = new List<string> { expectedError };
-            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+            var validationResults = new List<ValidationResult>();
 
             // Act
-            var result = _productService.CheckProductModelErrors(product);
+            var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("StockNotAnInteger");
 
             // Assert
-            Assert.Equal(expectedErrors, result);
+            Assert.False(isValid);
+            Assert.Contains(validationResults, vr => vr.ErrorMessage == expectedErrorMessage);
         }
 
         [Fact]

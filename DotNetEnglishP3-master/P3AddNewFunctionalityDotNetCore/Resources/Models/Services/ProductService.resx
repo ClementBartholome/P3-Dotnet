@@ -118,36 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MissingName" xml:space="preserve">
-    <value>Veuillez saisir un nom</value>
+    <value>fr</value>
   </data>
   <data name="MissingPrice" xml:space="preserve">
-    <value>Veuillez saisir un prix</value>
+    <value>fr</value>
   </data>
   <data name="MissingStock" xml:space="preserve">
-    <value>Veuillez saisir un stock</value>
+    <value>fr</value>
   </data>
   <data name="PriceNotANumber" xml:space="preserve">
-    <value>La valeur saisie pour le prix doit être un nombre</value>
+    <value>fr</value>
   </data>
   <data name="PriceNotGreaterThanZero" xml:space="preserve">
-    <value>Le prix doit être supérieur à zéro</value>
+    <value>fr</value>
   </data>
   <data name="StockNotAnInteger" xml:space="preserve">
-    <value>La valeur saisie pour le stock doit être un entier</value>
+    <value>fr</value>
   </data>
   <data name="StockNotGreaterThanZero" xml:space="preserve">
-    <value>Le stock doit être supérieur à zéro</value>
+    <value>fr</value>
   </data>
   <data name="ProductAlreadyExists" xml:space="preserve">
-    <value>Un produit avec ce nom est déjà enregistré</value>
+    <value>fr</value>
   </data>
   <data name="NameTooLong" xml:space="preserve">
-    <value>La taille max du nom est de 50 caractères</value>
+    <value>fr</value>
   </data>
   <data name="DetailsTooLong" xml:space="preserve">
-    <value>La taille max des détails est de 50 caractères</value>
+    <value>fr</value>
   </data>
   <data name="DescriptionTooLong" xml:space="preserve">
-    <value>La taille max de la description est de 50 caractères</value>
+    <value>fr</value>
   </data>
 </root>
