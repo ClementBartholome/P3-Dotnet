@@ -56,18 +56,18 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             _initialProduct = new ProductViewModel
             {
                 Name = "Test Product",
-                Stock = 10,
-                Price = 100.0,
+                Stock = "10",
+                Price = "100.99",
                 Description = "Test Description",
                 Details = "Test Details"
             };
         }
 
         [Fact]
-        public void CheckProductDeletion()
+        public async void CheckProductDeletion()
         {
             // Arrange
-            _productService.SaveProduct(_initialProduct);
+            await _productService.SaveProduct(_initialProduct);
             var savedProduct = _productService.GetAllProductsViewModel().First();
 
             // Act
@@ -79,10 +79,12 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         }
 
         [Fact]
-        public void CheckProductCreation()
+        public async void CheckProductCreation()
         {
             // Arrange
-            _productService.SaveProduct(_initialProduct);
+            await _productService.SaveProduct(_initialProduct);
+            
+            // Act
             var savedProduct = _productService.GetAllProductsViewModel().First();
 
             // Assert
@@ -100,13 +102,8 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Arrange
             _productService.SaveProduct(_initialProduct);
             var savedProduct = _productService.GetAllProductsViewModel().First();
-
-            // Get the Product instance from the repository
             var product = await _productRepository.GetProduct(savedProduct.Id);
-
-            // Add the product to the cart with a quantity of 5
             _cart.AddItem(product, 5);
-
             _output.WriteLine("Added product to cart. Stock before update: {0}", product.Quantity);
 
             // Act
@@ -116,7 +113,7 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
 
             // Assert
             var updatedProduct = _productService.GetProductByIdViewModel(savedProduct.Id);
-            Assert.Equal(5, updatedProduct.Stock);
+            Assert.Equal(5, int.Parse(updatedProduct.Stock));
         }
     }
 }

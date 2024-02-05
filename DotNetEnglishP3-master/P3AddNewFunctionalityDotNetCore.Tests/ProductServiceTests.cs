@@ -26,7 +26,7 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         public void CheckProductModelErrors_ReturnsMissingNameError_WhenNameIsNull()
         {
             // Arrange
-            var product = new ProductViewModel { Name = null, Stock = 10, Price = 1.99 };
+            var product = new ProductViewModel { Name = null, Stock = "10", Price = "1.99" };
             var expectedError = "MissingName";
             var expectedErrors = new List<string> { expectedError };
             _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
@@ -42,7 +42,7 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         public void CheckProductModelErrors_ReturnsStockNotGreaterThanZeroError_WhenStockIsZero()
         {
             // Arrange
-            var product = new ProductViewModel { Name = "Test", Stock = 0, Price = 1.99 };
+            var product = new ProductViewModel { Name = "Test", Stock = "0", Price = "1.99" };
             var expectedError = "StockNotGreaterThanZero";
             var expectedErrors = new List<string> { expectedError };
             _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
@@ -58,7 +58,7 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         public void CheckProductModelErrors_ReturnsPriceNotGreaterThanZeroError_WhenPriceIsZero()
         {
             // Arrange
-            var product = new ProductViewModel { Name = "Test", Stock = 10, Price = 0 };
+            var product = new ProductViewModel { Name = "Test", Stock = "10", Price = "0" };
             var expectedError = "PriceNotGreaterThanZero";
             var expectedErrors = new List<string> { expectedError };
             _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
@@ -69,7 +69,71 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Assert
             Assert.Equal(expectedErrors, result);
         }
-        
+
+        [Fact]
+        public void CheckProductModelErrors_ReturnsMissingPriceError_WhenPriceIsNull()
+        {
+            // Arrange
+            var product = new ProductViewModel { Name = "Test", Stock = "10", Price = null };
+            var expectedError = "MissingPrice";
+            var expectedErrors = new List<string> { expectedError };
+            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+
+            // Act
+            var result = _productService.CheckProductModelErrors(product);
+
+            // Assert
+            Assert.Equal(expectedErrors, result);
+        }
+
+        [Fact]
+        public void CheckProductModelErrors_ReturnsPriceNotANumberError_WhenPriceIsNotANumber()
+        {
+            // Arrange
+            var product = new ProductViewModel { Name = "Test", Stock = "10", Price = "NotANumber" };
+            var expectedError = "PriceNotANumber";
+            var expectedErrors = new List<string> { expectedError };
+            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+
+            // Act
+            var result = _productService.CheckProductModelErrors(product);
+
+            // Assert
+            Assert.Equal(expectedErrors, result);
+        }
+
+        [Fact]
+        public void CheckProductModelErrors_ReturnsMissingStockError_WhenStockIsNull()
+        {
+            // Arrange
+            var product = new ProductViewModel { Name = "Test", Stock = null, Price = "1.99" };
+            var expectedError = "MissingStock";
+            var expectedErrors = new List<string> { expectedError };
+            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+
+            // Act
+            var result = _productService.CheckProductModelErrors(product);
+
+            // Assert
+            Assert.Equal(expectedErrors, result);
+        }
+
+        [Fact]
+        public void CheckProductModelErrors_ReturnsStockNotAnIntegerError_WhenStockIsNotAnInteger()
+        {
+            // Arrange
+            var product = new ProductViewModel { Name = "Test", Stock = "1.99", Price = "1.99" };
+            var expectedError = "StockNotAnInteger";
+            var expectedErrors = new List<string> { expectedError };
+            _localizerMock.Setup(_ => _[expectedError]).Returns(new LocalizedString(expectedError, expectedError));
+
+            // Act
+            var result = _productService.CheckProductModelErrors(product);
+
+            // Assert
+            Assert.Equal(expectedErrors, result);
+        }
+
         [Fact]
         public void GetAllProducts_ReturnsAllProducts()
         {
