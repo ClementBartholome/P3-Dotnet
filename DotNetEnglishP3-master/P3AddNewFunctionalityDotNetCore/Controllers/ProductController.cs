@@ -45,7 +45,7 @@ namespace P3AddNewFunctionalityDotNetCore.Controllers
             var saveProductError = await _productService.SaveProduct(product);
             if (saveProductError != null)
             {
-                ModelState.AddModelError("", saveProductError);
+                ModelState.AddModelError("Name", saveProductError);
             }
             else
             {
