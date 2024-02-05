@@ -114,7 +114,7 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
 
             if (product.Stock == null || string.IsNullOrWhiteSpace(product.Stock))
             {
-                modelErrors.Add(_localizer["MissingQuantity"]);
+                modelErrors.Add(_localizer["MissingStock"]);
             }
             else if (!int.TryParse(product.Stock, out int qt))
             {
