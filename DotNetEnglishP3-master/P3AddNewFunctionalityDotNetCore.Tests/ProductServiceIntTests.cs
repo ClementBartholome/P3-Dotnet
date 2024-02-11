@@ -81,10 +81,8 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         [Fact]
         public async void CheckProductCreation()
         {
-            // Arrange
-            await _productService.SaveProduct(_initialProduct);
-
             // Act
+            await _productService.SaveProduct(_initialProduct);
             var savedProduct = _productService.GetAllProductsViewModel().First();
 
             // Assert
