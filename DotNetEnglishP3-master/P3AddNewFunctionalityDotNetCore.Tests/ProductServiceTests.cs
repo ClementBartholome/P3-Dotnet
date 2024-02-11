@@ -20,9 +20,8 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
 
         public ProductServiceTests()
         {
-            _localizerMock = new Mock<IStringLocalizer<ProductService>>();
             _mockProductRepository = new Mock<IProductRepository>();
-            _productService = new ProductService(null, _mockProductRepository.Object, null, _localizerMock.Object);
+            _productService = new ProductService(null, _mockProductRepository.Object, null, null);
         }
 
         [Fact]
@@ -31,11 +30,11 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Arrange
             var product = new ProductViewModel { Name = null, Stock = "10", Price = "1.99" };
             var validationResults = new List<ValidationResult>();
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("MissingName");
 
             // Act
             var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
-            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
-            var expectedErrorMessage = resourceManager.GetString("MissingName");
 
             // Assert
             Assert.False(isValid);
@@ -48,11 +47,11 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "0", Price = "1.99" };
             var validationResults = new List<ValidationResult>();
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("StockNotGreaterThanZero");
 
             // Act
             var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
-            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
-            var expectedErrorMessage = resourceManager.GetString("StockNotGreaterThanZero");
             
             // Assert
             Assert.False(isValid);
@@ -65,11 +64,11 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "10", Price = "0" };
             var validationResults = new List<ValidationResult>();
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("PriceNotGreaterThanZero");
 
             // Act
             var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
-            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
-            var expectedErrorMessage = resourceManager.GetString("PriceNotGreaterThanZero");
             
             // Assert
             Assert.False(isValid);
@@ -82,11 +81,11 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "10", Price = null };
             var validationResults = new List<ValidationResult>();
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("MissingPrice");
 
             // Act
             var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
-            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
-            var expectedErrorMessage = resourceManager.GetString("MissingPrice");
             
             // Assert
             Assert.False(isValid);
@@ -99,11 +98,11 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "10", Price = "NotANumber" };
             var validationResults = new List<ValidationResult>();
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("PriceNotANumber");
 
             // Act
             var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
-            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
-            var expectedErrorMessage = resourceManager.GetString("PriceNotANumber");
 
             // Assert
             Assert.False(isValid);
@@ -116,11 +115,11 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = null, Price = "1.99" };
             var validationResults = new List<ValidationResult>();
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("MissingStock");
 
             // Act
             var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
-            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
-            var expectedErrorMessage = resourceManager.GetString("MissingStock");
             
             // Assert
             Assert.False(isValid);
@@ -133,11 +132,11 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             // Arrange
             var product = new ProductViewModel { Name = "Test", Stock = "1.99", Price = "1.99" };
             var validationResults = new List<ValidationResult>();
+            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
+            var expectedErrorMessage = resourceManager.GetString("StockNotAnInteger");
 
             // Act
             var isValid = Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true);
-            var resourceManager = new ResourceManager(typeof(ServiceResources.ProductService));
-            var expectedErrorMessage = resourceManager.GetString("StockNotAnInteger");
 
             // Assert
             Assert.False(isValid);

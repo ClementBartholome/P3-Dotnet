@@ -100,11 +100,9 @@ namespace P3AddNewFunctionalityDotNetCore.Models.Services
             {
                 return _localizer["ProductAlreadyExists"];
             }
-            else
-            {
-                _productRepository.SaveProduct(productToAdd);
-                return null;
-            }
+
+            _productRepository.SaveProduct(productToAdd);
+            return null;
         }
 
         private static Product MapToProductEntity(ProductViewModel product)

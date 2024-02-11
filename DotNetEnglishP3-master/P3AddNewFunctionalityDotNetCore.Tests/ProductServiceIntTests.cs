@@ -42,16 +42,16 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
     {
         private readonly ITestOutputHelper _output;
         private readonly ProductService _productService;
-        private readonly ProductRepository _productRepository;
+
         private readonly Cart _cart;
-        private ProductViewModel _initialProduct;
+        private readonly ProductViewModel _initialProduct;
 
         public ProductServiceIntegrationTests(ITestOutputHelper output, DbContextFixture fixture)
         {
             _output = output;
             _cart = new Cart();
             _productService = new ProductService(_cart, fixture.ProductRepository, null, null);
-            _productRepository = fixture.ProductRepository;
+
 
             _initialProduct = new ProductViewModel
             {
@@ -83,7 +83,7 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         {
             // Arrange
             await _productService.SaveProduct(_initialProduct);
-            
+
             // Act
             var savedProduct = _productService.GetAllProductsViewModel().First();
 
@@ -101,8 +101,7 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         {
             // Arrange
             _productService.SaveProduct(_initialProduct);
-            var savedProduct = _productService.GetAllProductsViewModel().First();
-            var product = await _productRepository.GetProduct(savedProduct.Id);
+            var product = _productService.GetAllProducts().First();
             _cart.AddItem(product, 5);
             _output.WriteLine("Added product to cart. Stock before update: {0}", product.Quantity);
 
@@ -112,7 +111,7 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
             _output.WriteLine("Updated product quantities. Stock after update: {0}", product.Quantity);
 
             // Assert
-            var updatedProduct = _productService.GetProductByIdViewModel(savedProduct.Id);
+            var updatedProduct = _productService.GetProductByIdViewModel(product.Id);
             Assert.Equal(5, int.Parse(updatedProduct.Stock));
         }
     }
