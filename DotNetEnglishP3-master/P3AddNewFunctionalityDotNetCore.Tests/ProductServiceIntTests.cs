@@ -15,16 +15,22 @@ using Xunit.Abstractions;
 
 namespace P3AddNewFunctionalityDotNetCore.Tests
 {
-    public class DbContextFixture
+    public class ProductServiceIntegrationTests
     {
-        public ProductRepository ProductRepository { get; }
+        private readonly ITestOutputHelper _output;
+        private readonly ProductService _productService;
+        private readonly Cart _cart;
+        private readonly ProductViewModel _initialProduct;
 
-        public DbContextFixture()
+        public ProductServiceIntegrationTests(ITestOutputHelper output)
         {
+            
+            // Configuration des options pour la base de données en mémoire
             var options = new DbContextOptionsBuilder<P3Referential>()
                 .UseInMemoryDatabase(databaseName: $"P3AddNewFunctionalityDb{Guid.NewGuid()}")
                 .Options;
 
+            // Configuration de la connexion à la base de données
             var configBuilder = new ConfigurationBuilder();
             configBuilder.AddInMemoryCollection(new[]
             {
@@ -32,27 +38,12 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
                     @"Server=localhost\\MSSQLSERVER01;Database=P3Referential-2f561d3b-493f-46fd-83c9-6e2643e7bd0a;Trusted_Connection=True;MultipleActiveResultSets=true")
             });
             var config = configBuilder.Build();
-
+            
             var context = new P3Referential(options, config);
-            ProductRepository = new ProductRepository(context);
-        }
-    }
-
-    public class ProductServiceIntegrationTests : IClassFixture<DbContextFixture>
-    {
-        private readonly ITestOutputHelper _output;
-        private readonly ProductService _productService;
-
-        private readonly Cart _cart;
-        private readonly ProductViewModel _initialProduct;
-
-        public ProductServiceIntegrationTests(ITestOutputHelper output, DbContextFixture fixture)
-        {
+            var productRepository = new ProductRepository(context);
             _output = output;
             _cart = new Cart();
-            _productService = new ProductService(_cart, fixture.ProductRepository, null, null);
-
-
+            _productService = new ProductService(_cart, productRepository, null, null);
             _initialProduct = new ProductViewModel
             {
                 Name = "Test Product",
@@ -61,12 +52,19 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
                 Description = "Test Description",
                 Details = "Test Details"
             };
+
+            
+            
+
+
+           
         }
 
         [Fact]
         public async void CheckProductDeletion()
         {
             // Arrange
+
             await _productService.SaveProduct(_initialProduct);
             var savedProduct = _productService.GetAllProductsViewModel().First();
 
@@ -82,6 +80,7 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         public async void CheckProductCreation()
         {
             // Act
+
             await _productService.SaveProduct(_initialProduct);
             var savedProduct = _productService.GetAllProductsViewModel().First();
 
@@ -98,7 +97,8 @@ namespace P3AddNewFunctionalityDotNetCore.Tests
         public async Task CheckUpdateProductQuantities()
         {
             // Arrange
-            _productService.SaveProduct(_initialProduct);
+
+            await _productService.SaveProduct(_initialProduct);
             var product = _productService.GetAllProducts().First();
             _cart.AddItem(product, 5);
             _output.WriteLine("Added product to cart. Stock before update: {0}", product.Quantity);
